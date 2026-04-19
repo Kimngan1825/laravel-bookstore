@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Controller2;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\GoogleAuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,8 +18,41 @@ Route::get('/', function () {
 
 Route::get('/sach', [HomeController::class, 'sach']);
 
-require __DIR__.'/auth.php';
+// Routes cho quản lý sách và giỏ hàng (Controller4)
+Route::prefix('book')->group(function () {
+    // Xem chi tiết sách
+    Route::get('/{id}', [\App\Http\Controllers\Controller4::class, 'show'])->name('book.detail');
+    
+    // Thêm vào giỏ hàng
+    Route::post('/{id}/add-to-cart', [\App\Http\Controllers\Controller4::class, 'addToCart'])->name('book.addToCart');
+});
 
+// Routes giỏ hàng
+Route::prefix('cart')->group(function () {
+    // Hiển thị giỏ hàng (và xử lý POST khi cập nhật toàn bộ)
+    Route::match(['get', 'post'], '/', [\App\Http\Controllers\Controller4::class, 'index'])->name('cart.index');
+
+    // Trang checkout
+    Route::get('/checkout', [\App\Http\Controllers\Controller4::class, 'checkoutPage'])->name('cart.checkout.page');
+
+    // Checkout
+    Route::post('/checkout', [\App\Http\Controllers\Controller4::class, 'checkout'])->name('cart.checkout');
+    
+    // Cập nhật số lượng sản phẩm
+    Route::post('/{id}', [\App\Http\Controllers\Controller4::class, 'updateCart'])->whereNumber('id')->name('cart.update');
+    
+    // Xóa sản phẩm từ giỏ hàng
+    Route::delete('/{id}', [\App\Http\Controllers\Controller4::class, 'remove'])->whereNumber('id')->name('cart.remove');
+    
+    // Áp dụng mã giảm giá
+    Route::post('/coupon/apply', [\App\Http\Controllers\Controller4::class, 'applyCoupon'])->name('coupon.apply');
+    
+    // Xóa mã giảm giá
+    Route::delete('/coupon/remove', [\App\Http\Controllers\Controller4::class, 'removeCoupon'])->name('coupon.remove');
+    
+});
+
+require __DIR__.'/auth.php';
 
 // --- KHU VỰC QUẢN TRỊ (ADMIN) ---
 Route::prefix('admin')->group(function () {
@@ -61,3 +95,9 @@ Route::prefix('admin')->group(function () {
     Route::get('/coupons/delete/{id}', [Controller2::class, 'deletecoupon'])->name('admin.coupons.delete');
 
 });
+// google
+Route::get('/auth/google',[GoogleAuthController::class,'redirect']);
+Route::get('/auth/google/callback',[GoogleAuthController::class,'callback']);
+
+// Backward-compatible URL for old login page links
+Route::redirect('/forgot', '/forgot-password');
