@@ -174,7 +174,7 @@
                 <ul class="nav-menu">
                     <li><a href="/" class="active">Trang chủ</a></li>
                     <li><a href="/sach">Sách</a></li>
-                    <li><a href="#">Đơn hàng</a></li>
+                    <li><a href="{{ route('orderhistory') }}">Đơn hàng</a></li>
                 </ul>
             </div>
 
@@ -196,7 +196,7 @@
                                 <i class="bi bi-person-circle fs-5"></i> {{ Auth::user()->name }}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-                                <li><a class="dropdown-item small" href="#">Thông tin tài khoản</a></li>
+                                <li><a class="dropdown-item small" href="{{ route('profile') }}">Thông tin tài khoản</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form action="{{ route('logout') }}" method="POST">
@@ -253,5 +253,6 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    @stack('scripts')
 </body>
 </html>

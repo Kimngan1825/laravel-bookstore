@@ -2,7 +2,7 @@
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="fw-bold text-mint">Lịch sử đơn hàng</h2>
-            <a href="{{ route('products') }}" class="btn btn-outline-primary btn-sm">
+            <a href="{{ route('sach.index') }}" class="btn btn-outline-primary btn-sm">
                 <i class="bi bi-arrow-left me-1"></i> Tiếp tục mua hàng
             </a>
         </div>

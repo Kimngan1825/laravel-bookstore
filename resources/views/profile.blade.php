@@ -1,95 +1,224 @@
 <x-booklayout title="Hồ sơ cá nhân - Bookstore">
-    <div class="container mt-4">
-        <div class="row">
-            <div class="col-md-5">
-                <div class="card shadow-sm border-0">
-                    <div class="card-header bg-white fw-bold py-3">
-                        <i class="bi bi-person-lines-fill me-2"></i>Thông tin cá nhân
-                    </div>
-                    <div class="card-body">
-                        <div id="profile-message"></div>
+<div class="container py-4">
+    <div class="row">
 
-                        <form id="update-profile-form">
-                            @csrf
-                            <div class="mb-3">
-                                <label class="small fw-bold mb-1">Họ tên</label>
-                                <input type="text" id="full_name" name="full_name" class="form-control form-control-sm" value="{{ $user->full_name }}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="small fw-bold mb-1">Email</label>
-                                <input type="email" id="email" name="email" class="form-control form-control-sm" value="{{ $user->email }}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="small fw-bold mb-1">Số điện thoại</label>
-                                <input type="text" id="phone" name="phone" class="form-control form-control-sm" value="{{ $user->phone }}">
-                            </div>
-                            <button type="button" id="btn-update-profile" class="btn btn-primary w-100 fw-bold">
-                                CẬP NHẬT HỒ SƠ
-                            </button>
-                        </form>
+        <!-- SIDEBAR -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 mb-3">
+                <div class="card-body text-center">
+                    <div class="rounded-circle bg-light mx-auto mb-2"
+                        style="width:80px;height:80px;display:flex;align-items:center;justify-content:center;font-size:35px;">
+                        👤
                     </div>
+                    <h6 class="fw-bold mb-0">{{ $user->full_name }}</h6>
+                    <small class="text-muted">Thành viên</small>
                 </div>
             </div>
 
-            <div class="col-md-7">
-                <h5 class="fw-bold mb-3 d-flex justify-content-between align-items-center">
-                    <span>Sách yêu thích của bạn</span>
-                    <span class="badge bg-mint text-white rounded-pill fs-6">{{ $favorites->count() }}</span>
-                </h5>
-                <div class="row">
-                    @forelse($favorites as $item)
-                    <div class="col-md-4 mb-3">
-                        <div class="card h-100 border-0 shadow-sm text-center p-2">
-                            <img src="{{ asset('storage/'.$item->file_image) }}" class="card-img-top mx-auto" style="width: 80px; height: 110px; object-fit: cover;">
-                            <div class="card-body p-2 mt-2">
-                                <p class="small text-truncate fw-bold mb-1">{{ $item->title }}</p>
-                                <span class="text-danger small fw-bold">{{ number_format($item->price) }}đ</span>
-                            </div>
-                        </div>
-                    </div>
-                    @empty
-                    <div class="col-12 text-center py-5">
-                        <p class="text-muted mt-2">Danh sách yêu thích đang trống.</p>
-                    </div>
-                    @endforelse
-                </div>
+            <div class="list-group shadow-sm">
+                <a href="#profile" class="list-group-item list-group-item-action active" data-bs-toggle="tab">
+                    Hồ sơ cá nhân
+                </a>
+                <a href="#password" class="list-group-item list-group-item-action" data-bs-toggle="tab">
+                    Đổi mật khẩu
+                </a>
+                <a href="#favorites" class="list-group-item list-group-item-action" data-bs-toggle="tab">
+                    Sản phẩm yêu thích
+                </a>
+                <a href="#address" class="list-group-item list-group-item-action" data-bs-toggle="tab">
+                    Sổ địa chỉ
+                </a>
             </div>
         </div>
-    </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-    $(document).ready(function() {
-        $('#btn-update-profile').click(function() {
-            let formData = {
+        <!-- CONTENT -->
+        <div class="col-md-9">
+            <div class="tab-content">
+
+                <!-- PROFILE -->
+                <div class="tab-pane fade show active" id="profile">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header fw-bold">Hồ sơ cá nhân</div>
+                        <div class="card-body">
+
+                            <div id="profile-message"></div>
+
+                            <form id="update-profile-form">
+                                @csrf
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label>Họ tên</label>
+                                        <input type="text" id="full_name" class="form-control"
+                                               value="{{ $user->full_name }}">
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label>SĐT</label>
+                                        <input type="text" id="phone" class="form-control"
+                                               value="{{ $user->phone }}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>Email</label>
+                                    <input type="email" id="email" class="form-control"
+                                           value="{{ $user->email }}">
+                                </div>
+
+                                <button type="button" id="btn-update-profile" class="btn btn-primary">
+                                    Cập nhật
+                                </button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PASSWORD -->
+                <div class="tab-pane fade" id="password">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header fw-bold">Đổi mật khẩu</div>
+                        <div class="card-body">
+
+                            <form method="POST" action="{{ route('change_password') }}">
+                                @csrf
+
+                                <div class="mb-3">
+                                    <label>Mật khẩu cũ</label>
+                                    <input type="password" name="old_password" class="form-control">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>Mật khẩu mới</label>
+                                    <input type="password" name="new_password" class="form-control">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>Xác nhận mật khẩu</label>
+                                    <input type="password" name="confirm_password" class="form-control">
+                                </div>
+
+                                <button class="btn btn-primary">
+                                    Đổi mật khẩu
+                                </button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAVORITES -->
+                <div class="tab-pane fade" id="favorites">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header fw-bold">
+                            Sản phẩm yêu thích ({{ $favorites->count() }})
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                @foreach($favorites as $book)
+                                <div class="col-md-3 mb-3">
+                                    <div class="card border-0 shadow-sm">
+                                        <img src="{{ asset('book/'.$book->image) }}"
+                                             class="card-img-top"
+                                             style="height:150px;object-fit:cover;">
+                                        <div class="card-body p-2 text-center">
+                                            <small class="fw-bold">{{ $book->title }}</small>
+                                            <div class="text-danger">
+                                                {{ number_format($book->price) }}đ
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="tab-pane fade" id="address">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header fw-bold">
+                            Sổ địa chỉ ({{ $addresses->count() }})
+                        </div>
+
+                        <div class="card-body">
+
+                            @forelse($addresses as $address)
+                            <div class="border rounded p-3 mb-2">
+
+                                <div class="fw-bold">
+                                    {{ $address->full_name }}
+                                </div>
+
+                                <div class="text-muted">
+                                    {{ $address->phone }}
+                                </div>
+
+                                <div>
+                                    {{ $address->address_line }}, {{ $address->city }}
+                                </div>
+
+                                @if($address->is_default == 1)
+                                    <span class="badge bg-success mt-1">
+                                        Mặc định
+                                    </span>
+                                @endif
+
+                            </div>
+                            @empty
+                            <p class="text-muted text-center">
+                                Bạn chưa có địa chỉ nào
+                            </p>
+                            @endforelse
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+$(document).ready(function(){
+
+    $('#btn-update-profile').click(function(){
+
+        $.ajax({
+            url: "{{ route('profile.update') }}",
+            type: "POST",
+            data: {
+                _token: "{{ csrf_token() }}",
                 full_name: $('#full_name').val(),
                 email: $('#email').val(),
-                phone: $('#phone').val(),
-                _token: $('input[name="_token"]').val()
-            };
+                phone: $('#phone').val()
+            },
 
-            $.ajax({
-                url: "{{ route('profile_update') }}",
-                method: "POST",
-                data: formData,
-                success: function(response) {
-                    $('#profile-message').html(`
-                        <div class="alert alert-success border-0 small py-2">
-                            <i class="bi bi-check-circle-fill me-2"></i>${response.message}
-                        </div>
-                    `);
-                },
-                error: function(xhr) {
-                    let errors = xhr.responseJSON.errors;
-                    let errorHtml = '<div class="alert alert-danger border-0 small py-2"><ul class="mb-0">';
-                    $.each(errors, function(key, value) {
-                        errorHtml += '<li>' + value[0] + '</li>';
-                    });
-                    errorHtml += '</ul></div>';
-                    $('#profile-message').html(errorHtml);
-                }
-            });
+            success: function(response){
+                $('#profile-message').html(
+                    '<div class="alert alert-success">Cập nhật thành công</div>'
+                );
+            },
+
+            error: function(xhr){
+                console.log(xhr.responseText);
+
+                $('#profile-message').html(
+                    '<div class="alert alert-danger">'
+                    + xhr.responseJSON.message +
+                    '</div>'
+                );
+            }
+
         });
+
     });
-    </script>
+
+});
+</script>
+
 </x-booklayout>
