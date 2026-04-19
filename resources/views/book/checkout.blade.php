@@ -124,6 +124,8 @@
                                     <option value="E_WALLET" {{ old('payment_method') === 'E_WALLET' ? 'selected' : '' }}>Ví điện tử</option>
                                 </select>
                             </div>
+
+                            <input type="hidden" name="coupon_code" id="orderCouponCode" value="{{ old('coupon_code', $couponInput ?? '') }}">
                         </form>
                     </div>
                 </div>
@@ -134,15 +136,31 @@
                     <div class="card-body">
                         <label class="fw-bold small mb-2"><i class="bi bi-ticket-perforated"></i> Mã ưu đãi</label>
                         <div class="coupon-box p-3">
-                            <input
-                                type="text"
-                                class="form-control"
-                                name="coupon_code"
-                                form="orderForm"
-                                value="{{ old('coupon_code') }}"
-                                placeholder="Nhập mã (VD: SALE50)"
-                            >
-                            <div class="coupon-hint">Mã sẽ được kiểm tra khi bạn bấm Đặt hàng ngay.</div>
+                            <form method="POST" action="{{ route('coupon.apply') }}" class="d-flex gap-2 mb-2">
+                                @csrf
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="couponInput"
+                                    name="coupon_code"
+                                    value="{{ old('coupon_code', $couponInput ?? '') }}"
+                                    placeholder="Nhập mã (VD: SALE50)"
+                                >
+                                <button type="submit" class="btn btn-outline-success">Áp dụng</button>
+                            </form>
+
+                            @if(!empty($appliedCoupon))
+                                <div class="d-flex justify-content-between align-items-center small mt-2">
+                                    <span class="text-success fw-bold">Đã áp dụng: {{ $appliedCoupon->code }}</span>
+                                    <form method="POST" action="{{ route('coupon.remove') }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-link btn-sm p-0 text-danger text-decoration-none">Hủy mã</button>
+                                    </form>
+                                </div>
+                            @endif
+
+                            <div class="coupon-hint">Bấm Áp dụng để kiểm tra mã trước, hệ thống vẫn kiểm tra lại khi Đặt hàng.</div>
                         </div>
                     </div>
                 </div>
@@ -167,11 +185,15 @@
                             </div>
                             <div class="d-flex justify-content-between small text-success fw-bold mb-1">
                                 <span>Giảm giá:</span>
-                                <span>- nhập mã để áp dụng</span>
+                                @if(($discountPreview ?? 0) > 0)
+                                    <span>- {{ number_format($discountPreview, 0, ',', '.') }} đ</span>
+                                @else
+                                    <span>- chưa áp dụng</span>
+                                @endif
                             </div>
                             <div class="d-flex justify-content-between align-items-center mt-2">
                                 <span class="fw-bold fs-5">Tổng cộng:</span>
-                                <span class="summary-total">{{ number_format($subtotal, 0, ',', '.') }} đ</span>
+                                <span class="summary-total">{{ number_format($totalPreview ?? $subtotal, 0, ',', '.') }} đ</span>
                             </div>
                         </div>
 
@@ -208,6 +230,22 @@
                     saveBox.style.display = 'block';
                 }
             }
+
+            (function syncCouponCode() {
+                const couponInput = document.getElementById('couponInput');
+                const orderCouponCode = document.getElementById('orderCouponCode');
+
+                if (!couponInput || !orderCouponCode) {
+                    return;
+                }
+
+                const updateHiddenCoupon = function () {
+                    orderCouponCode.value = couponInput.value;
+                };
+
+                updateHiddenCoupon();
+                couponInput.addEventListener('input', updateHiddenCoupon);
+            })();
         </script>
     @endpush
 </x-book-layout>

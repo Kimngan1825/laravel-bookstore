@@ -55,7 +55,7 @@
 </x-button>
 
 <!-- Quên mật khẩu -->
-<a href="/forgot" class="underline text-sm text-gray-600 hover:text-gray-900 block mt-3">
+<a href="{{ route('password.request') }}" class="underline text-sm text-gray-600 hover:text-gray-900 block mt-3">
     Quên mật khẩu?
 </a>
 

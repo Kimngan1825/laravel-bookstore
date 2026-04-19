@@ -267,49 +267,18 @@ class Controller4 extends Controller
             return redirect()->back()->with('error', 'Vui lòng nhập mã giảm giá');
         }
 
-        // Tìm coupon
-        $coupon = DB::table('coupons')
-            ->where('code', $code)
-            ->where('is_active', 1)
-            ->first();
-
-        if (!$coupon) {
-            if ($request->expectsJson()) {
-                return response()->json(['error' => 'Mã giảm giá không hợp lệ'], 404);
-            }
-            return redirect()->back()->with('error', 'Mã giảm giá không hợp lệ');
-        }
-
-        // Kiểm tra ngày hết hạn
-        if ($coupon->end_date && $coupon->end_date < now()) {
-            if ($request->expectsJson()) {
-                return response()->json(['error' => 'Mã giảm giá đã hết hạn'], 400);
-            }
-            return redirect()->back()->with('error', 'Mã giảm giá đã hết hạn');
-        }
-
-        // Kiểm tra số lần sử dụng
-        if ($coupon->max_usage && $coupon->usage_count >= $coupon->max_usage) {
-            if ($request->expectsJson()) {
-                return response()->json(['error' => 'Mã giảm giá đã hết lượt sử dụng'], 400);
-            }
-            return redirect()->back()->with('error', 'Mã giảm giá đã hết lượt sử dụng');
-        }
-
         // Tính tổng tiền hiện tại
         $subtotal = 0;
         foreach ($cart as $item) {
             $subtotal += $item['gia_ban'] * $item['so_luong'];
         }
 
-        // Kiểm tra đơn hàng tối thiểu
-        if ($subtotal < $coupon->min_order_value) {
+        [$coupon, $couponError] = $this->validateCoupon($code, $subtotal);
+        if ($couponError) {
             if ($request->expectsJson()) {
-                return response()->json([
-                    'error' => 'Đơn hàng phải có giá trị tối thiểu ' . number_format($coupon->min_order_value) . ' đ'
-                ], 400);
+                return response()->json(['error' => $couponError], 400);
             }
-            return redirect()->back()->with('error', 'Đơn hàng phải có giá trị tối thiểu ' . number_format($coupon->min_order_value) . ' đ');
+            return redirect()->back()->withInput()->with('error', $couponError);
         }
 
         // Lưu coupon vào session
@@ -369,6 +338,27 @@ class Controller4 extends Controller
             $subtotal += $item['gia_ban'] * $item['so_luong'];
         }
 
+        $couponInput = strtoupper(trim((string)old('coupon_code', '')));
+        $sessionCoupon = Session::get('coupon');
+        if ($couponInput === '' && $sessionCoupon && isset($sessionCoupon->code)) {
+            $couponInput = strtoupper((string)$sessionCoupon->code);
+        }
+
+        $appliedCoupon = null;
+        $discountPreview = 0;
+        if ($couponInput !== '') {
+            [$validatedCoupon, $couponError] = $this->validateCoupon($couponInput, $subtotal);
+            if ($validatedCoupon) {
+                $appliedCoupon = $validatedCoupon;
+                $discountPreview = $this->calculateDiscount($subtotal, $validatedCoupon);
+                Session::put('coupon', $validatedCoupon);
+            } elseif ($sessionCoupon && isset($sessionCoupon->code) && strtoupper((string)$sessionCoupon->code) === $couponInput) {
+                Session::forget('coupon');
+            }
+        }
+
+        $totalPreview = max(0, $subtotal - $discountPreview);
+
         $user = Auth::user();
         $cities = DB::table('cities')->orderBy('city_name')->pluck('city_name');
 
@@ -380,7 +370,17 @@ class Controller4 extends Controller
                 ->get();
         }
 
-        return view('book.checkout', compact('cart', 'subtotal', 'user', 'cities', 'savedAddresses'));
+        return view('book.checkout', compact(
+            'cart',
+            'subtotal',
+            'user',
+            'cities',
+            'savedAddresses',
+            'couponInput',
+            'appliedCoupon',
+            'discountPreview',
+            'totalPreview'
+        ));
     }
 
     // 4. Xử lý đặt hàng từ trang checkout
@@ -410,6 +410,11 @@ class Controller4 extends Controller
         $shipping_address = $fullName . ' - ' . $phone . ' - ' . $addressLine . ', ' . $city;
         $couponCodeInput = strtoupper(trim((string)$request->input('coupon_code', '')));
 
+        $sessionCoupon = Session::get('coupon');
+        if ($couponCodeInput === '' && $sessionCoupon && isset($sessionCoupon->code)) {
+            $couponCodeInput = strtoupper((string)$sessionCoupon->code);
+        }
+
         // Tính tổng tiền đơn hàng trước khi lưu
         $subtotal = 0;
         foreach ($cart as $item) {
@@ -421,37 +426,22 @@ class Controller4 extends Controller
         $couponId = null;
         $couponCode = null;
 
-        if ($couponCodeInput !== '') {
-            $coupon = DB::table('coupons')
-                ->where('code', $couponCodeInput)
-                ->where('is_active', 1)
-                ->first();
-
-            if (!$coupon) {
-                return redirect()->back()->withInput()->with('error', 'Mã giảm giá không hợp lệ.');
-            }
-
-            if ($coupon->end_date && $coupon->end_date < now()) {
-                return redirect()->back()->withInput()->with('error', 'Mã giảm giá đã hết hạn.');
-            }
-
-            if ($coupon->max_usage && $coupon->usage_count >= $coupon->max_usage) {
-                return redirect()->back()->withInput()->with('error', 'Mã giảm giá đã hết lượt sử dụng.');
-            }
-
-            if ($subtotal < $coupon->min_order_value) {
-                return redirect()->back()->withInput()->with('error', 'Đơn hàng phải có giá trị tối thiểu ' . number_format($coupon->min_order_value) . ' đ để dùng mã này.');
-            }
-
-            $discountAmount = $this->calculateDiscount($subtotal, $coupon);
-            $couponId = $coupon->coupon_id ?? null;
-            $couponCode = $coupon->code ?? null;
-        }
-
-        $totalAmount = max(0, $subtotal - $discountAmount);
-
         DB::beginTransaction();
         try {
+            if ($couponCodeInput !== '') {
+                [$coupon, $couponError] = $this->validateCoupon($couponCodeInput, $subtotal, true);
+                if ($couponError) {
+                    DB::rollBack();
+                    return redirect()->back()->withInput()->with('error', $couponError);
+                }
+
+                $discountAmount = $this->calculateDiscount($subtotal, $coupon);
+                $couponId = $coupon->coupon_id ?? null;
+                $couponCode = $coupon->code ?? null;
+            }
+
+            $totalAmount = max(0, $subtotal - $discountAmount);
+
             if ($request->boolean('save_new_address') && Auth::check()) {
                 DB::table('shipping_addresses')->insert([
                     'user_id' => $userId,
@@ -484,10 +474,15 @@ class Controller4 extends Controller
                     'price' => $item['gia_ban']
                 ]);
 
-                // Trừ tồn kho theo số lượng đã đặt
-                DB::table('books')
+                // Trừ tồn kho theo số lượng đã đặt, chống âm kho khi nhiều người mua đồng thời
+                $updatedRows = DB::table('books')
                     ->where('book_id', $id_sach)
+                    ->where('stock', '>=', $item['so_luong'])
                     ->decrement('stock', $item['so_luong']);
+
+                if ($updatedRows === 0) {
+                    throw new \RuntimeException('Sách "' . $item['ten_sach'] . '" đã hết hàng hoặc không đủ số lượng.');
+                }
             }
 
             if ($couponId) {
@@ -549,6 +544,37 @@ class Controller4 extends Controller
     {
         // Logic để tính lại tổng tiền (nếu cần)
         return $this->getCartTotal();
+    }
+
+    private function validateCoupon($code, $subtotal, $lockForUpdate = false)
+    {
+        $query = DB::table('coupons')
+            ->where('code', $code)
+            ->where('is_active', 1);
+
+        if ($lockForUpdate) {
+            $query->lockForUpdate();
+        }
+
+        $coupon = $query->first();
+
+        if (!$coupon) {
+            return [null, 'Mã giảm giá không hợp lệ.'];
+        }
+
+        if (!empty($coupon->end_date) && strtotime((string)$coupon->end_date) < time()) {
+            return [null, 'Mã giảm giá đã hết hạn.'];
+        }
+
+        if (!empty($coupon->max_usage) && (int)$coupon->usage_count >= (int)$coupon->max_usage) {
+            return [null, 'Mã giảm giá đã hết lượt sử dụng.'];
+        }
+
+        if ((float)$subtotal < (float)$coupon->min_order_value) {
+            return [null, 'Đơn hàng phải có giá trị tối thiểu ' . number_format($coupon->min_order_value) . ' đ để dùng mã này.'];
+        }
+
+        return [$coupon, null];
     }
 }
 
