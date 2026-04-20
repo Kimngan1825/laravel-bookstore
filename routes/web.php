@@ -52,6 +52,12 @@ Route::prefix('cart')->group(function () {
     
 });
 
+// Route hiển thị tất cả sách (Có phân trang và lọc)
+Route::get('/Booklist', [App\Http\Controllers\HomeController::class, 'bookList'])->name('products.index');
+
+// Route này trả về dữ liệu HTML cho ô tìm kiếm gợi ý
+Route::get('/search', [App\Http\Controllers\HomeController::class, 'search'])->name('search');
+
 require __DIR__.'/auth.php';
 
 // --- KHU VỰC QUẢN TRỊ (ADMIN) ---
