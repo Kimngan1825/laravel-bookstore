@@ -174,9 +174,9 @@
                 </a>
                 <!-- Menu  -->
                 <ul class="nav-menu">
-                    <li><a href="/sach" class="{{ request()->is('/') ? 'active' : '' }}">Trang chủ</a></li>
-                    <li><a href="{{ route('products.index') }}" class="nav-link {{ request()->is('Danh-sach-sach*') ? 'active' : '' }}" >Sách</a></li>
-                    <li><a href="/orders" class="{{ request()->is('orders') ? 'active' : '' }}">Đơn hàng</a></li>
+                    <li><a href="/sach" class="active">Trang chủ</a></li>
+                    <li><a href="/sach">Sách</a></li>
+                    <li><a href="{{ route('orderhistory') }}">Đơn hàng</a></li>
                 </ul>
             </div>
 
@@ -202,7 +202,7 @@
                                 <i class="bi bi-person-circle fs-5"></i> {{ Auth::user()->name }}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-                                <li><a class="dropdown-item small" href="#">Thông tin tài khoản</a></li>
+                                <li><a class="dropdown-item small" href="{{ route('profile') }}">Thông tin tài khoản</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form action="{{ route('logout') }}" method="POST">

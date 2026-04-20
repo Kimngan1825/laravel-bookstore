@@ -117,5 +117,7 @@ class HomeController extends Controller
         $books = $query->paginate(12)->withQueryString();
 
         return view('components.booklist', compact('categories', 'books', 'title'));
+        $books = Book::all();
+        return view('components.index', compact('books'));
     }
 }

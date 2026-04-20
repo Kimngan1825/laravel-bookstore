@@ -207,6 +207,14 @@
 
     @push('scripts')
         <script>
+            // Khởi tạo dữ liệu form ban đầu từ Laravel
+            const oldFormData = {
+                name: {!! json_encode(old('full_name', $user->full_name ?? '')) !!},
+                phone: {!! json_encode(old('phone', $user->phone ?? '')) !!},
+                addr: {!! json_encode(old('address_line', '')) !!},
+                city: {!! json_encode(old('city', '')) !!}
+            };
+
             function fillAddress(el) {
                 document.getElementById('inpName').value = el.dataset.name || '';
                 document.getElementById('inpPhone').value = el.dataset.phone || '';
@@ -220,15 +228,13 @@
             }
 
             function resetFormAddress() {
-                document.getElementById('inpName').value = @json(old('full_name', $user->full_name ?? ''));
-                document.getElementById('inpPhone').value = @json(old('phone', $user->phone ?? ''));
-                document.getElementById('inpAddr').value = @json(old('address_line', ''));
-                document.getElementById('inpCity').value = @json(old('city', ''));
+                document.getElementById('inpName').value = oldFormData.name;
+                document.getElementById('inpPhone').value = oldFormData.phone;
+                document.getElementById('inpAddr').value = oldFormData.addr;
+                document.getElementById('inpCity').value = oldFormData.city;
 
                 const saveBox = document.getElementById('saveAddrBox');
-                if (saveBox) {
-                    saveBox.style.display = 'block';
-                }
+                if (saveBox) saveBox.style.display = 'block';
             }
 
             (function syncCouponCode() {

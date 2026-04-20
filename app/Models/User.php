@@ -19,13 +19,12 @@ class User extends Authenticatable
     public $timestamps = false;
 
     /**
-     * The attributes that are mass assignable.
-     *
      * @var array<int, string>
      */
     protected $fillable = [
         'full_name',
         'email',
+        'phone',
         'password',
     ];
 
