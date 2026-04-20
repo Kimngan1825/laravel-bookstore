@@ -63,7 +63,7 @@
         }
         .nav-menu a.active {
             opacity: 1;
-            border-bottom: 2px solid white;
+            border-bottom: 2px white;
             padding-bottom: 2px;
         }
 
@@ -158,6 +158,8 @@
         .footer-socials a:hover {
             color: var(--mint);
         }
+
+        
     </style>
 </head>
 <body>
@@ -167,14 +169,14 @@
             
             <div class="d-flex align-items-center">
                 <!-- Logo -->
-                <a href="/" class="brand">
+                <a href="/sach" class="brand">
                     <i class="bi bi-book"></i> Cái tiệm bán sách
                 </a>
                 <!-- Menu  -->
                 <ul class="nav-menu">
-                    <li><a href="/" class="active">Trang chủ</a></li>
-                    <li><a href="/sach">Sách</a></li>
-                    <li><a href="#">Đơn hàng</a></li>
+                    <li><a href="/sach" class="{{ request()->is('/') ? 'active' : '' }}">Trang chủ</a></li>
+                    <li><a href="{{ route('products.index') }}" class="nav-link {{ request()->is('Danh-sach-sach*') ? 'active' : '' }}" >Sách</a></li>
+                    <li><a href="/orders" class="{{ request()->is('orders') ? 'active' : '' }}">Đơn hàng</a></li>
                 </ul>
             </div>
 
@@ -182,7 +184,11 @@
                 <form action="/search" method="GET" class="search-box shadow-sm">
                     <input type="text" name="q" placeholder="Tìm sách...">
                     <button type="submit"><i class="bi bi-search"></i></button>
+                        <div id="search-results" class="list-group list-group-flush shadow-sm" 
+                            style="position: absolute; top: 100%; left: 0; right: 0; background: white; z-index: 1050; display: none; max-height: 300px; overflow-y: auto;">
+                        </div>
                 </form>
+
 
                 <!-- Giỏ hàng -->
                 <a href="/cart" class="cart-icon">
@@ -217,8 +223,19 @@
         </div>
     </header>
 
-    <main class="container mt-4">
-        {{ $slot }}
+    <main class="container mt-5">
+        @if(isset($sidebar))
+            <div class="row">
+                <div class="col-md-3">
+                    {{ $sidebar }} <!-- Nơi chứa bộ lọc hoặc menu cá nhân -->
+                </div>
+                <div class="col-md-9">
+                    {{ $slot }} <!-- Nơi chứa danh sách sách hoặc nội dung chính -->
+                </div>
+            </div>
+        @else
+            {{ $slot }}
+        @endif
     </main>
 
     <footer class="footer-custom">
@@ -253,5 +270,32 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('.search-box input').on('keyup', function() {
+                let query = $(this).val();
+                if (query.length >= 2) { 
+                    $.ajax({
+                        url: "{{ route('search') }}", 
+                        method: "GET",
+                        data: { q: query },
+                        success: function(data) {
+                            $('#search-results').html(data).fadeIn();
+                        }
+                    });
+                } else {
+                    $('#search-results').fadeOut();
+                }
+            });
+
+            $(document).on('click', function(e) {
+                if (!$(e.target).closest('.search-box').length) $('#search-results').fadeOut();
+            });
+        });
+    </script>
+
+    @stack('scripts')
 </body>
 </html>
