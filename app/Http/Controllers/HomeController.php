@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Book;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -9,6 +10,8 @@ class HomeController extends Controller
 {
     public function sach()
     {
+        $books = Book::all();
+        return view('components.index', compact('books')); 
         $categories = DB::table('categories')
             ->select('categories.category_id', 'categories.category_name', DB::raw('(SELECT image FROM books WHERE books.category_id = categories.category_id LIMIT 1) as book_image'))
             ->get();
