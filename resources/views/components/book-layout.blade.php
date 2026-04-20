@@ -106,7 +106,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            color: white;
+            color: black;
             font-size: 0.9rem;
         }
         .auth-links a {
@@ -199,11 +199,17 @@
                     @auth
                         <div class="dropdown">
                             <a href="#" class="user-link dropdown-toggle" data-bs-toggle="dropdown">
-                                <i class="bi bi-person-circle fs-5"></i> {{ Auth::user()->name }}
+                                <i class="bi bi-person-circle fs-5 "></i> {{ Auth::user()->name }}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-                                <li><a class="dropdown-item small" href="{{ route('profile') }}">Thông tin tài khoản</a></li>
-                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item small text-dark" href="{{ route('profile') }}">Thông tin tài khoản</a></li>
+
+                                @if(Auth::user()->role_id == 1)
+                                    <li><a class="dropdown-item small text-dark" href="{{ route('orderhistory') }}">Lịch sử mua hàng</a></li>
+                                @elseif(Auth::user()->role_id == 2)
+                                    <li><a class="dropdown-item small text-dark" href="{{ route('admin.dashboard') }}">Quản lý Dashboard</a></li>
+                                @endif
+
                                 <li>
                                     <form action="{{ route('logout') }}" method="POST">
                                         @csrf

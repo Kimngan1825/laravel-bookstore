@@ -35,7 +35,7 @@
 <div class="header-teal shadow-sm mb-4">
     <div class="fs-5 fw-bold"><i class="bi bi-speedometer2"></i> Admin Dashboard</div>
     <div class="d-flex align-items-center">
-        <span class="me-3">Xin chào, <strong>{{ Auth::user()->full_name ?? 'Trần Quản Trị' }}</strong></span>
+        <span class="me-3">Xin chào, <strong>{{ Auth::user()->name ?? 'Admin'}}</strong></span>
         <a href="{{ url('/') }}" class="btn btn-sm btn-outline-light text-white fw-bold me-2" style="background-color: var(--admin-teal);">Trang chủ</a>
         <form action="{{ route('logout') }}" method="POST" class="d-inline">
             @csrf
