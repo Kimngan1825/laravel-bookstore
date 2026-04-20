@@ -10,8 +10,6 @@ class HomeController extends Controller
 {
     public function sach()
     {
-        $books = Book::all();
-        return view('components.index', compact('books')); 
         $categories = DB::table('categories')
             ->select('categories.category_id', 'categories.category_name', DB::raw('(SELECT image FROM books WHERE books.category_id = categories.category_id LIMIT 1) as book_image'))
             ->get();
@@ -19,7 +17,7 @@ class HomeController extends Controller
         $saleBooks = DB::table('books')->where('discount', '>', 0)->take(5)->get();
         $newBooks = DB::table('books')->orderBy('created_at', 'desc')->take(5)->get();
         $bestSellers = DB::table('books')->take(5)->get();
-        $top5Books = $top5Books = DB::table('books')
+        $top5Books = DB::table('books')
             ->leftJoin('order_items', 'books.book_id', '=', 'order_items.book_id')
             ->select(
                 'books.book_id', 
@@ -35,7 +33,6 @@ class HomeController extends Controller
             ->get();
 
         return view('components.index', compact('categories', 'saleBooks', 'newBooks', 'bestSellers', 'top5Books'));
-
     }
     public function index() {
         $heroSlides = [

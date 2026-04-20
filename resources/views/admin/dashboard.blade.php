@@ -7,7 +7,7 @@
     .header-teal { background-color: var(--admin-teal); color: white; padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 10px 10px; }
     .chart-box { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
     
-    /* Stats Cards - Giống hệt mẫu ảnh */
+    /* Stats Cards */
     .stat-card { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-left: 6px solid; height: 100%; transition: 0.3s; }
     .border-warning-custom { border-color: #ffc107; }
     .border-primary-custom { border-color: #0d6efd; }

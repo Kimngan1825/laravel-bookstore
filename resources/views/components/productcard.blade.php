@@ -1,3 +1,4 @@
+<a href="{{ route('book.detail', $book->book_id) }}" class="text-decoration-none text-dark">
 <div class="product-card h-100 shadow-sm border rounded bg-white overflow-hidden">
     {{-- Khung chứa ảnh: Tỷ lệ 3:4 chuẩn cho bìa sách --}}
     <div class="p-img-wrap" style="position: relative; width: 100%; padding-top: 140%; background: #f9f9f9; overflow: hidden;">
@@ -22,3 +23,4 @@
         </div>
     </div>
 </div>
+</a>

@@ -83,6 +83,7 @@
         <div class="books-grid">
             @foreach($books as $book)
                 <div class="book-item">
+                    <a href="{{ route('book.detail', $book->book_id) }}" class="text-decoration-none text-dark">
                     <div class="product-card h-100 shadow-sm border rounded bg-white overflow-hidden">
                         <div class="p-img-wrap" style="position: relative; padding-top: 135%; overflow: hidden; background: #f9f9f9;">
                             <img src="{{ asset('storage/uploads/books/' . ($book->image ?? 'no-image.png')) }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
@@ -98,6 +99,7 @@
                             </div>
                         </div>
                     </div>
+                    </a>
                 </div>
             @endforeach
         </div>
