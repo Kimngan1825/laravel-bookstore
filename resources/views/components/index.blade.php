@@ -1,38 +1,4 @@
 <x-book-layout>
-    <x-slot name="title">Trang chủ Nhà Sách</x-slot>
-    
-    <div class="row g-4">
-        @forelse($books as $book)
-            <div class="col-md-3">
-                <div class="card h-100 shadow-sm">
-                    @if($book->image)
-                        <img src="/book/{{ $book->image }}" class="card-img-top" alt="{{ $book->title }}" style="height: 250px; object-fit: cover;" onerror="this.src='/book/placeholder.jpg'">
-                    @else
-                        <div class="bg-light d-flex align-items-center justify-content-center" style="height: 250px;">
-                            <i class="bi bi-book fs-1 text-muted"></i>
-                        </div>
-                    @endif
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title text-truncate" title="{{ $book->title }}">{{ $book->title }}</h5>
-                        <p class="card-text text-muted small">{{ $book->publisher ?? 'NXB không rõ' }}</p>
-                        <p class="card-text flex-grow-1">
-                            <span class="badge bg-info">{{ $book->language ?? 'Tiếng Việt' }}</span>
-                        </p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="h5 mb-0 text-danger">{{ number_format($book->price, 0) }}₫</span>
-                            <a href="{{ route('book.detail', $book->book_id) }}" class="btn btn-sm btn-outline-primary">Xem chi tiết</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @empty
-            <div class="col-12">
-                <div class="alert alert-warning text-center">
-                    <i class="bi bi-exclamation-triangle"></i> Hiện chưa có sách nào
-                </div>
-            </div>
-        @endforelse
-    </div>
     <x-slot name="title">Trang chủ - Cái tiệm bán sách</x-slot>
 
     <!-- KHỐI QUẢNG CÁO (HERO SECTION) -->
@@ -118,11 +84,12 @@
     <div class="row row-cols-2 row-cols-md-5 g-3 mb-5">
         @foreach($top5Books->take(5) as $index => $book)
             <div class="col">
-                <div class="product-card h-100 position-relative shadow-sm border rounded overflow-hidden">
-                    {{-- Badge xếp hạng 1, 2, 3, 4, 5 --}}
-                    @php $rank = $index + 1; @endphp
-                    @php $rank = $index + 1; @endphp
-                    <div class="badge-rank top-{{ $rank }}">{{ $rank }}</div>
+                <a href="{{ route('book.detail', $book->book_id) }}" class="text-decoration-none text-dark">
+                    <div class="product-card h-100 position-relative shadow-sm border rounded overflow-hidden">
+                        {{-- Badge xếp hạng 1, 2, 3, 4, 5 --}}
+                        @php $rank = $index + 1; @endphp
+                        @php $rank = $index + 1; @endphp
+                        <div class="badge-rank top-{{ $rank }}">{{ $rank }}</div>
                     
                     <div class="p-img-wrap" style="padding-top: 135%; position: relative;">
                         <img src="{{ asset('storage/uploads/books/'.$book->image) }}" class="w-100 h-100 position-absolute top-0 start-0" style="object-fit: cover;">
@@ -132,6 +99,7 @@
                         <div class="p-price text-danger fw-bold">{{ number_format($book->price) }}đ</div>
                         <div class="p-sold small text-muted"><i class="bi bi-fire text-danger"></i> Đã bán {{ $book->total_sold }}</div>
                     </div>
+                </a>
                 </div>
             </div>
         @endforeach

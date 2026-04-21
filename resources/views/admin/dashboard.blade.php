@@ -7,7 +7,7 @@
     .header-teal { background-color: var(--admin-teal); color: white; padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 10px 10px; }
     .chart-box { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
     
-    /* Stats Cards - Giống hệt mẫu ảnh */
+    /* Stats Cards */
     .stat-card { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-left: 6px solid; height: 100%; transition: 0.3s; }
     .border-warning-custom { border-color: #ffc107; }
     .border-primary-custom { border-color: #0d6efd; }
@@ -35,7 +35,7 @@
 <div class="header-teal shadow-sm mb-4">
     <div class="fs-5 fw-bold"><i class="bi bi-speedometer2"></i> Admin Dashboard</div>
     <div class="d-flex align-items-center">
-        <span class="me-3">Xin chào, <strong>{{ Auth::user()->full_name ?? 'Trần Quản Trị' }}</strong></span>
+        <span class="me-3">Xin chào, {{ Str::title(Auth::user()->full_name ?? 'Admin') }}</strong></span>
         <a href="{{ url('/') }}" class="btn btn-sm btn-outline-light text-white fw-bold me-2" style="background-color: var(--admin-teal);">Trang chủ</a>
         <form action="{{ route('logout') }}" method="POST" class="d-inline">
             @csrf

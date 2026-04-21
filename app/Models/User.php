@@ -16,16 +16,15 @@ class User extends Authenticatable
     protected $primaryKey = 'user_id';
     protected $keyType = 'int';
     public $incrementing = true;
-    public $timestamps = true;
+    public $timestamps = false;
 
     /**
-     * The attributes that are mass assignable.
-     *
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'full_name',
         'email',
+        'phone',
         'password',
     ];
 
@@ -45,7 +44,6 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
     ];
 
 }

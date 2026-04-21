@@ -33,33 +33,35 @@
             </div>
 
                    <!-- Remember Me -->
-<div class="block mt-4">
-    <label for="remember_me" class="inline-flex items-center">
-        <input id="remember_me" type="checkbox"
-            class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-200"
-            name="remember">
-        <span class="ml-2 text-sm text-gray-600">Ghi nhớ mật khẩu</span>
-    </label>
-</div>
-<div class="flex flex-col gap-3 mt-4">
+            <div class="block mt-4">
+                <label for="remember_me" class="inline-flex items-center">
+                    <input id="remember_me" type="checkbox"
+                        class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-200"
+                        name="remember">
+                    <span class="ml-2 text-sm text-gray-600">Ghi nhớ mật khẩu</span>
+                </label>
+            </div>
+            <div class="flex flex-col gap-3 mt-4">
 
-    <!-- Google -->
-    <!-- Google -->
-<x-button class="w-full justify-center">
-    <a href="/auth/google">Đăng nhập bằng Google</a>
-</x-button>
+                <!-- Google -->
+                <!-- Google -->
+            <x-button class="w-full justify-center">
+                <a href="{{ route('google.redirect') }}" class="flex items-center gap-2">
+                    <i class="bi bi-google"></i> Đăng nhập bằng Google
+                </a>
+            </x-button>
 
-<!-- Login -->
-<x-button class="w-full justify-center mt-3">
-    Đăng nhập
-</x-button>
+            <!-- Login -->
+            <x-button class="w-full justify-center mt-3">
+                Đăng nhập
+            </x-button>
 
-<!-- Quên mật khẩu -->
-<a href="{{ route('password.request') }}" class="underline text-sm text-gray-600 hover:text-gray-900 block mt-3">
-    Quên mật khẩu?
-</a>
+            <!-- Quên mật khẩu -->
+            <a href="{{ route('password.request') }}" class="underline text-sm text-gray-600 hover:text-gray-900 block mt-3">
+                Quên mật khẩu?
+            </a>
 
-</div>
+            </div>
         </form>
     </x-auth-card>
 </x-guest-layout>  
