@@ -40,7 +40,9 @@
                             </td>
                             <td><small class="text-muted">{{ $order->payment_method }}</small></td>
                             <td class="text-center">
-                                <button class="btn btn-sm btn-light border">Chi tiết</button>
+                                <a href="{{ route('orders.show', $order->order_id) }}" class="btn btn-sm btn-light border">
+                                    Chi tiết
+                                </a>
                             </td>
                         </tr>
                         @endforeach
@@ -51,7 +53,7 @@
             <div class="text-center py-5 bg-white shadow-sm rounded">
                 <i class="bi bi-bag-x display-1 text-muted"></i>
                 <p class="text-muted mt-3">Bạn chưa có đơn hàng nào.</p>
-                <a href="{{ route('products') }}" class="btn btn-mint text-white px-4">Mua sắm ngay</a>
+                <a href="{{ route('products.index') }}" class="btn btn-mint text-white px-4">Mua sắm ngay</a>
             </div>
         @endif
     </div>

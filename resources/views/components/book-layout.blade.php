@@ -175,7 +175,7 @@
                 <!-- Menu  -->
                 <ul class="nav-menu">
                     <li><a href="/sach" class="active">Trang chủ</a></li>
-                    <li><a href="/sach">Sách</a></li>
+                    <li><a href="{{ route('products.index') }}">Sách</a></li>
                     <li><a href="{{ route('orderhistory') }}">Đơn hàng</a></li>
                 </ul>
             </div>
@@ -199,14 +199,15 @@
                     @auth
                         <div class="dropdown">
                             <a href="#" class="user-link dropdown-toggle" data-bs-toggle="dropdown">
-                                <i class="bi bi-person-circle fs-5 "></i> {{ Auth::user()->name }}
+                                <i class="bi bi-person-circle fs-5 "></i> 
+                                <span>{{ Auth::user()->full_name ?? 'Khách' }}</span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end shadow-sm">
                                 <li><a class="dropdown-item small text-dark" href="{{ route('profile') }}">Thông tin tài khoản</a></li>
 
-                                @if(Auth::user()->role_id == 1)
+                                @if(Auth::user()->role_id == 2)
                                     <li><a class="dropdown-item small text-dark" href="{{ route('orderhistory') }}">Lịch sử mua hàng</a></li>
-                                @elseif(Auth::user()->role_id == 2)
+                                @elseif(Auth::user()->role_id == 1)
                                     <li><a class="dropdown-item small text-dark" href="{{ route('admin.dashboard') }}">Quản lý Dashboard</a></li>
                                 @endif
 

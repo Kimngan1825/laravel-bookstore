@@ -9,20 +9,41 @@ use Illuminate\Support\Facades\Auth;
 
 class GoogleAuthController extends Controller
 {
-    public function redirect(){
-        return Socialite::driver('google')->redirect();
+    public function redirect()
+    {
+        return Socialite::driver('google')
+            ->with(['prompt' => 'select_account']) 
+            ->redirect();
     }
 
-    public function callback(){
-        $googleUser = Socialite::driver('google')->user();
+    public function callback()
+{
+    try {
+        $googleUser = Socialite::driver('google')
+            ->setHttpClient(new \GuzzleHttp\Client(['verify' => false])) 
+            ->user();
 
-        $user = User::firstOrCreate(
-            ['email'=>$googleUser->email],
-            ['name'=>$googleUser->name, 'password'=>bcrypt('123')]
+        $user = User::updateOrCreate(
+            ['email' => $googleUser->email],
+            [
+                'full_name' => $googleUser->name, 
+                'password' => bcrypt('12345678@'),
+                // 'role_id' => 2, // Nếu là user mới thì mặc định là 2
+            ]
         );
 
-        Auth::login($user);
+        Auth::login($user, true);
+        request()->session()->regenerate();
 
-        return redirect('/home');
+        // --- SỬA ĐOẠN NÀY ĐỂ PHÂN QUYỀN GIỐNG AUTHCONTROLLER ---
+        if ($user->role_id == 1) {
+            return redirect('/admin/dashboard');
+        }
+
+        return redirect()->to('/sach');
+
+    } catch (\Exception $e) {
+        return redirect('/login')->with('error', 'Lỗi: ' . $e->getMessage());
+    }
     }
 }

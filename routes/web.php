@@ -24,6 +24,11 @@
         // 4. Lịch sử đơn hàng
         Route::get('/orderhistory', [OrderController::class, 'index'])->name('orderhistory');
     });
+
+    Route::middleware(['auth', 'admin'])->group(function () {
+        Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+    });
+
     // --- TRANG CHỦ & AUTH ---
     Route::get('/', function () {
         return redirect('/sach');
@@ -46,11 +51,11 @@
         // Trang checkout
         Route::get('/checkout', [\App\Http\Controllers\Controller4::class, 'checkoutPage'])->name('cart.checkout.page');
 
-// Route hiển thị tất cả sách (Có phân trang và lọc)
-Route::get('/Booklist', [App\Http\Controllers\HomeController::class, 'bookList'])->name('products.index');
+    // Route hiển thị tất cả sách (Có phân trang và lọc)
+    Route::get('/Booklist', [App\Http\Controllers\HomeController::class, 'bookList'])->name('products.index');
 
-// Route này trả về dữ liệu HTML cho ô tìm kiếm gợi ý
-Route::get('/search', [App\Http\Controllers\HomeController::class, 'search'])->name('search');
+    // Route này trả về dữ liệu HTML cho ô tìm kiếm gợi ý
+    Route::get('/search', [App\Http\Controllers\HomeController::class, 'search'])->name('search');
 
 
         // Checkout
@@ -113,11 +118,12 @@ Route::redirect('/forgot', '/forgot-password');
         Route::get('/coupons/delete/{id}', [Controller2::class, 'deletecoupon'])->name('admin.coupons.delete');
 
     });
+    Route::get('/orders/{id}', [App\Http\Controllers\OrderController::class, 'show'])->name('orders.show');
 
     require __DIR__.'/auth.php';
 
     // google
-    Route::get('/auth/google',[GoogleAuthController::class,'redirect']);
+    Route::get('/auth/google',[GoogleAuthController::class,'redirect'])->name('google.redirect');
     Route::get('/auth/google/callback',[GoogleAuthController::class,'callback']);
 
     // Backward-compatible URL for old login page links

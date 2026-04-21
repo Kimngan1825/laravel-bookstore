@@ -13,12 +13,21 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    // xử lý login
     public function login(Request $req){
-        if(Auth::attempt($req->only('email','password'))){
-            return redirect('/home');
+        $credentials = $req->only('email', 'password');
+
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+
+            // Chuyển hướng dựa trên role_id
+            if ($user->role_id == 1) {
+                return redirect('/admin/dashboard')->with('msg', 'Chào mừng Admin quay trở lại');
+            } 
+            
+            return redirect('/sach')->with('msg', 'Đăng nhập thành công');
         }
-        return back()->with('error','Sai thông tin');
+
+        return back()->with('error', 'Email hoặc mật khẩu không chính xác');
     }
 
     // form register
@@ -29,22 +38,20 @@ class AuthController extends Controller
     // xử lý register
     public function register(Request $req){
     $req->validate([
-        'name' => 'required',
+        'full_name' => 'required',
         'email' => 'required|email|unique:users,email',
         'password' => 'required|min:6|confirmed'
-    ],[
-        'email.unique' => 'Email đã tồn tại',
-        'password.confirmed' => 'Mật khẩu nhập lại không khớp'
     ]);
 
     User::create([
-        'name'=>$req->name,
-        'email'=>$req->email,
-        'password'=>Hash::make($req->password)
+        'full_name' => $req->full_name,
+        'email' => $req->email,
+        'password' => Hash::make($req->password),
+        'role_id' => 2 // Luôn mặc định là User thường
     ]);
 
-    return redirect('/login')->with('msg','Đăng ký thành công');
-}
+    return redirect('/login')->with('msg', 'Đăng ký thành công, mời bạn đăng nhập');
+    }
 
     // logout
     public function logout(){

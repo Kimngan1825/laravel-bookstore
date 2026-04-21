@@ -46,7 +46,9 @@
                 <!-- Google -->
                 <!-- Google -->
             <x-button class="w-full justify-center">
-                <a href="/auth/google">Đăng nhập bằng Google</a>
+                <a href="{{ route('google.redirect') }}" class="flex items-center gap-2">
+                    <i class="bi bi-google"></i> Đăng nhập bằng Google
+                </a>
             </x-button>
 
             <!-- Login -->
