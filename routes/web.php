@@ -34,11 +34,17 @@
     // Routes cho quản lý sách và giỏ hàng (Controller4)
     Route::prefix('book')->group(function () {
         // Xem chi tiết sách
-        Route::get('/{id}', [\App\Http\Controllers\Controller4::class, 'show'])->name('book.detail');
+        Route::get('/id={id}', [\App\Http\Controllers\Controller4::class, 'show'])->name('book.detail');
         
         // Thêm vào giỏ hàng
-        Route::post('/{id}/add-to-cart', [\App\Http\Controllers\Controller4::class, 'addToCart'])->name('book.addToCart');
+        Route::post('/id={id}/add-to-cart', [\App\Http\Controllers\Controller4::class, 'addToCart'])->name('book.addToCart');
     });
+
+        // Route hiển thị tất cả sách (Có phân trang và lọc)
+    Route::get('/Booklist', [App\Http\Controllers\HomeController::class, 'bookList'])->name('products.index');
+
+    // Route này trả về dữ liệu HTML cho ô tìm kiếm gợi ý
+    Route::get('/search', [App\Http\Controllers\HomeController::class, 'search'])->name('search');
 
     // Routes giỏ hàng
     Route::prefix('cart')->group(function () {
@@ -48,11 +54,7 @@
         // Trang checkout
         Route::get('/checkout', [\App\Http\Controllers\Controller4::class, 'checkoutPage'])->name('cart.checkout.page');
 
-    // Route hiển thị tất cả sách (Có phân trang và lọc)
-    Route::get('/Booklist', [App\Http\Controllers\HomeController::class, 'bookList'])->name('products.index');
 
-    // Route này trả về dữ liệu HTML cho ô tìm kiếm gợi ý
-    Route::get('/search', [App\Http\Controllers\HomeController::class, 'search'])->name('search');
 
 
         // Checkout

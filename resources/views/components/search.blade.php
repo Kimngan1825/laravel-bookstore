@@ -1,6 +1,10 @@
 <x-book-layout>
     <x-slot name="title">Kết quả tìm kiếm: {{ $q }}</x-slot>
 
+    <x-slot name="sidebar">
+        @include('components.booksidebar') 
+    </x-slot>
+
     <div class="section-header" style="margin-top: 40px;">
         <h4 class="section-title title-new">Kết quả tìm kiếm cho: "{{ $q }}"</h4>
         <span class="text-muted">Tìm thấy {{ $books->count() }} sản phẩm</span>

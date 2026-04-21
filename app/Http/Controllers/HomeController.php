@@ -59,9 +59,11 @@ class HomeController extends Controller
 
     public function search(Request $request)
     {
-        $q = $request->query('q'); 
+
+        $q = $request->query('q');
+        $categories = DB::table('categories')->get(); 
         $books = DB::table('books')->where('is_active', 1)->where('title', 'LIKE', "%{$q}%")->get();
-        return view('components.search', compact('books', 'q'));
+        return view('components.search', compact('books', 'q', 'categories'));
     }
 
     public function bookList(Request $request)
