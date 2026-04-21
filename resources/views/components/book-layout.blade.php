@@ -231,13 +231,29 @@
     </header>
 
     <main class="container mt-5">
+         @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show shadow-sm mb-4" role="alert">
+                <i class="bi bi-exclamation-octagon-fill me-2"></i>
+                <strong>Thông báo:</strong> {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        @if(session('msg'))
+            <div class="alert alert-success alert-dismissible fade show shadow-sm mb-4" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                <strong>Thành công:</strong> {{ session('msg') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
         @if(isset($sidebar))
             <div class="row">
                 <div class="col-md-3">
-                    {{ $sidebar }} <!-- Nơi chứa bộ lọc hoặc menu cá nhân -->
+                    {{ $sidebar }}
                 </div>
                 <div class="col-md-9">
-                    {{ $slot }} <!-- Nơi chứa danh sách sách hoặc nội dung chính -->
+                    {{ $slot }} 
                 </div>
             </div>
         @else

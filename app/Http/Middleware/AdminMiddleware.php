@@ -9,11 +9,11 @@ use Illuminate\Support\Facades\Auth;
 class AdminMiddleware
 {
     public function handle(Request $request, Closure $next)
-    {
-        if (Auth::check() && Auth::user()->role_id == 1) {
-            return $next($request);
-        }
+{
 
-        return redirect('/sach')->with('error', 'Bạn không có quyền vào trang Admin!');
+    if (Auth::check() && Auth::user()->role_id == 1) {
+        return $next($request);
     }
+    return redirect('/sach')->with('error', 'Bạn không có quyền truy cập!'); 
+}
 }
