@@ -1,64 +1,216 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# 📚 Bookstore E-Commerce Platform
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A full-featured e-commerce bookstore platform built with Laravel 10.  
+The project supports customer shopping, checkout with discount coupons, and administrative management of books, inventory, orders, users, and promotions.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### For Customers
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Browse and search books by category and price
+- View book details and customer reviews
+- Add and update items in the shopping cart
+- Checkout with multiple payment methods: COD, Bank Transfer, and E-Wallet
+- Apply discount coupons
+- Manage favorite books
+- View order history
+- Update profile information and shipping addresses
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### For Admins
 
-## Learning Laravel
+- Dashboard with revenue statistics
+- Manage books and inventory
+- Manage categories
+- Manage users and roles
+- Manage orders and order status
+- Manage coupons and promotions
+- Moderate customer reviews
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Tech Stack
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **Backend:** Laravel 10, PHP 8.1+
+- **Frontend:** Blade, Tailwind CSS, JavaScript
+- **Database:** MySQL 8.4
+- **Authentication:** Laravel Breeze, Google OAuth
 
-## Laravel Sponsors
+## Installation & Setup
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+### 1. Clone the repository
 
-### Premium Partners
+```bash
+git clone https://github.com/Kimngan1825/laravel-bookstore.git
+cd laravel-bookstore
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+### 2. Install dependencies
 
-## Contributing
+```bash
+composer install
+npm install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 3. Set up the environment
 
-## Code of Conduct
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 4. Configure the database
 
-## Security Vulnerabilities
+Update the database configuration in `.env`:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=bookstore_db
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-## License
+### 5. Import the database
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+mysql -u root -p < bookstore_db.sql
+```
+
+### 6. Run the application
+
+```bash
+npm run dev
+```
+
+In another terminal:
+
+```bash
+php artisan serve
+```
+
+Open the application at:
+
+```text
+http://localhost:8000
+```
+
+## Main User Flow
+
+1. Browse books from the homepage
+2. Search or filter books by category and price
+3. View book details
+4. Add books to the shopping cart
+5. Review and update cart items
+6. Apply a coupon if applicable
+7. Enter checkout information
+8. Select a payment method
+9. Place the order
+10. View the order in order history
+
+## Admin Flow
+
+1. Log in with an admin account
+2. Open the admin dashboard
+3. Manage books and inventory
+4. Manage orders and update order status
+5. Manage users and roles
+6. Manage coupons and promotions
+7. Moderate customer reviews
+
+## Database
+
+The repository includes a database dump:
+
+```text
+bookstore_db.sql
+```
+
+The database contains sample data for the application, including:
+
+- 70+ sample books
+- 50+ sample users
+- Categories
+- Coupons and discounts
+- Sample orders
+- Customer reviews
+
+Importing the SQL file provides sample data for testing the application.
+
+## Project Structure
+
+```text
+app/
+└── Http/
+    └── Controllers/
+        ├── HomeController.php
+        ├── Controller4.php
+        ├── OrderController.php
+        ├── ProfileController.php
+        ├── FavoriteController.php
+        └── Controller2.php
+
+routes/
+└── web.php
+
+database/
+└── bookstore_db.sql
+```
+
+## Key Implementation
+
+### Stock Management
+
+- Validates available inventory before processing an order
+- Uses database transactions for order processing
+- Includes inventory checks to prevent orders from exceeding available stock
+
+### Coupon System
+
+- Supports discount codes with configurable conditions
+- Validates minimum order value
+- Validates coupon expiration
+- Supports usage limits
+
+### Order Processing
+
+- Processes order creation within a database transaction
+- Saves order information and related order items as part of the checkout process
+
+### Email Notification
+
+- Sends order confirmation emails after checkout
+- SMTP configuration is required for email functionality
+
+## Team Contributions
+
+This project was developed as a group assignment.
+
+- **Ngân:** Product display and search functionality
+- **Quang:** Shopping cart, checkout, and payment
+- **Châu:** Email notifications and review moderation
+- **Other members:** Additional project features
+
+## Configuration Notes
+
+### Email
+
+Email notifications require SMTP configuration in `.env`.
+
+### Google OAuth
+
+Google authentication requires the corresponding client ID and client secret to be configured in `.env`.
+
+### Environment Variables
+
+Sensitive information such as database credentials, SMTP credentials, and OAuth secrets should be stored in `.env` and should not be committed to the repository.
+
+## Future Improvements
+
+- Add automated testing
+- Refactor and improve code structure
+- Integrate real payment gateways
+- Improve admin analytics and reporting
+
+## Project Status
+
+🎓 Educational group project  
+📦 Ready for local testing
